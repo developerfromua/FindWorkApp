@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "480329999328",
+    "project_id": "findwork-24169",
+    "storage_bucket": "findwork-24169.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480329999328:android:db4c531c59bb9752504185",
+        "android_client_info": {
+          "package_name": "com.rsoftware.findworkapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480329999328-pd9slu89j16hqjuu60h0ahqo4ujas26i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rsoftware.findworkapp",
+            "certificate_hash": "611d3a01276f38ec5ec4a05ef8a6cf8080b4e404"
+          }
+        },
+        {
+          "client_id": "480329999328-2uhehlhp2uktstnns09o536dt45qr2fi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzpxN8MVQJvkn8naaH6QiD8p39dNNU0wc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480329999328-2uhehlhp2uktstnns09o536dt45qr2fi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
