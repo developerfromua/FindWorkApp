@@ -22,4 +22,15 @@
         android:name="com.rsoftware.findworkapp.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_fourth"
+        android:name="com.rsoftware.findworkapp.ui.fourth.FourthFragment"
+        android:label="Четвертый"
+        tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/navigation_fifth"
+        android:name="com.rsoftware.findworkapp.ui.fifth.FifthFragment"
+        android:label="Пятый"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>
