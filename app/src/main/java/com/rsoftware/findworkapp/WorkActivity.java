@@ -1,5 +1,7 @@
 package com.rsoftware.findworkapp;
 
+import static com.google.android.material.navigation.NavigationBarView.LABEL_VISIBILITY_LABELED;
+
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -10,19 +12,17 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.rsoftware.findworkapp.databinding.ActivityWorkBinding;
 
 public class WorkActivity extends AppCompatActivity {
-
     private ActivityWorkBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityWorkBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -30,6 +30,7 @@ public class WorkActivity extends AppCompatActivity {
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications, R.id.navigation_fourth, R.id.navigation_fifth)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_work);
+
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 

@@ -125,6 +125,7 @@
 
     <Button
         android:id="@+id/buttonLoginGoogle"
+        android:onClick="onClickLogInGoogle"
         style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
         android:layout_width="330dp"
         android:layout_height="wrap_content"
