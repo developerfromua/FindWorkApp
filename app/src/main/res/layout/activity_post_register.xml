@@ -12,6 +12,7 @@
         android:layout_height="38dp"
         android:layout_marginTop="308dp"
         android:text="Я ищу работу"
+        android:onClick="onClickEmployee"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,17 +24,18 @@
         android:layout_height="42dp"
         android:layout_marginTop="28dp"
         android:text="Я работодатель"
+        android:onClick="onClickEmployer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonEmployee" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/buttonLogOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClickLogOut"
-        android:text="Button"
+        android:text="Выход"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
