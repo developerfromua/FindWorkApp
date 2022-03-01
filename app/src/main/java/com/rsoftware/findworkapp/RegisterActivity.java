@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -18,33 +21,40 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class PostRegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private EditText editTextEmail;
+    private EditText editTextPassword;
+    private EditText editTextName;
+    private EditText editTextSurname;
+    private RadioGroup radioGroupTypeWorker;
+    private RadioButton radioButtonRegisterEmployee;
+    private RadioButton radioButtonRegisterEmployer;
+    private int typeWorker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_register);
+        setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        editTextEmail = findViewById(R.id.editTextEmail);
+        editTextPassword = findViewById(R.id.editTextPassword);
+        editTextName = findViewById(R.id.editTextRegisterName);
+        editTextSurname = findViewById(R.id.editTextRegisterSurname);
+        if (radioButtonRegisterEmployer.isChecked()) {
+            typeWorker = 0;
+        }
+        else {
+            typeWorker = 1;
+        }
 
     }
 
     public void onClickLogOut(View view) {
-        signOut();
-    }
-    public void signOut() {
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(PostRegisterActivity.this, "logged out", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(PostRegisterActivity.this, MainActivity.class);
-                        startActivity(intent);
-                    }
-                });
+       mAuth.signOut();
     }
 
     public void onClickEmployer(View view) {
@@ -70,11 +80,11 @@ public class PostRegisterActivity extends AppCompatActivity {
                     }
                 });
         if (i == 0) {
-            Intent intent = new Intent(PostRegisterActivity.this, WorkActivity.class);
+            Intent intent = new Intent(RegisterActivity.this, WorkActivity.class);
             startActivity(intent);
         }
         else {
-            Intent intent = new Intent(PostRegisterActivity.this, WorkActivity.class);
+            Intent intent = new Intent(RegisterActivity.this, WorkActivity.class);
             startActivity(intent);
         }
     }

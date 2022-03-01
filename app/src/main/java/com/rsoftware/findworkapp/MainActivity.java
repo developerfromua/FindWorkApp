@@ -10,7 +10,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextPassword;
     private GoogleSignInClient mGoogleSignInClient;
     private int RC_SIGN_IN = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +140,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 }
+
+    public void onClickRegister(View view) {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+    }
 
     public void onClickLogInGoogle(View view) {
         signIn();

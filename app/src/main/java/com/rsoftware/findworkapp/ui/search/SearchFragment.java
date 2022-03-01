@@ -1,4 +1,4 @@
-package com.rsoftware.findworkapp.ui.dashboard;
+package com.rsoftware.findworkapp.ui.search;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,24 +12,23 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.rsoftware.findworkapp.R;
-import com.rsoftware.findworkapp.databinding.FragmentDashboardBinding;
+import com.rsoftware.findworkapp.databinding.FragmentSearchBinding;
 
-public class DashboardFragment extends Fragment {
+public class SearchFragment extends Fragment {
 
-    private DashboardViewModel dashboardViewModel;
-    private FragmentDashboardBinding binding;
+    private SearchViewModel searchViewModel;
+    private FragmentSearchBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        searchViewModel =
+                new ViewModelProvider(this).get(SearchViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentSearchBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        final TextView textView = binding.textHome;
+        searchViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
@@ -43,4 +42,5 @@ public class DashboardFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
 }

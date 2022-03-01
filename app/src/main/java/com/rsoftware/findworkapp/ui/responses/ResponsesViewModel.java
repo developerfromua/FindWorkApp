@@ -1,16 +1,16 @@
-package com.rsoftware.findworkapp.ui.home;
+package com.rsoftware.findworkapp.ui.responses;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class ResponsesViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public HomeViewModel() {
+    public ResponsesViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        mText.setValue("This is notifications fragment");
     }
 
     public LiveData<String> getText() {

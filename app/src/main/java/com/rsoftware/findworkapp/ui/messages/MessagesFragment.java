@@ -1,4 +1,4 @@
-package com.rsoftware.findworkapp.ui.fifth;
+package com.rsoftware.findworkapp.ui.messages;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -14,24 +14,25 @@ import android.view.ViewGroup;
 
 import com.rsoftware.findworkapp.R;
 
-public class FifthFragment extends Fragment {
+public class MessagesFragment extends Fragment {
 
-    private FifthViewModel mViewModel;
+    private MessagesViewModel mViewModel;
 
-    public static FifthFragment newInstance() {
-        return new FifthFragment();
+    public static MessagesFragment newInstance() {
+        return new MessagesFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fifth_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_messages,container,false);
+        return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(FifthViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(MessagesViewModel.class);
         // TODO: Use the ViewModel
     }
 

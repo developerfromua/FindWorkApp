@@ -1,4 +1,4 @@
-package com.rsoftware.findworkapp.ui.notifications;
+package com.rsoftware.findworkapp.ui.responses;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,24 +12,23 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.rsoftware.findworkapp.R;
-import com.rsoftware.findworkapp.databinding.FragmentNotificationsBinding;
+import com.rsoftware.findworkapp.databinding.FragmentFavouriteBinding;
 
-public class NotificationsFragment extends Fragment {
+public class ResponsesFragment extends Fragment {
 
-    private NotificationsViewModel notificationsViewModel;
-    private FragmentNotificationsBinding binding;
+    private ResponsesViewModel responsesViewModel;
+    private FragmentFavouriteBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
+        responsesViewModel =
+                new ViewModelProvider(this).get(ResponsesViewModel.class);
 
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        binding = FragmentFavouriteBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        final TextView textView = binding.textDashboard;
+        responsesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

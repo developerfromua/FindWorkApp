@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FindWorkApp">
         <activity
-            android:name=".PostRegisterActivity"
+            android:name=".RegisterActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
