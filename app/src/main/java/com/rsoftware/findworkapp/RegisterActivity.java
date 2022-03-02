@@ -17,9 +17,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -40,16 +45,14 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        editTextEmail = findViewById(R.id.editTextEmail);
-        editTextPassword = findViewById(R.id.editTextPassword);
+        editTextEmail = findViewById(R.id.editTextRegisterEmail);
+        editTextPassword = findViewById(R.id.editTextRegisterPassword);
         editTextName = findViewById(R.id.editTextRegisterName);
         editTextSurname = findViewById(R.id.editTextRegisterSurname);
-        if (radioButtonRegisterEmployer.isChecked()) {
-            typeWorker = 0;
-        }
-        else {
-            typeWorker = 1;
-        }
+        radioButtonRegisterEmployee = findViewById(R.id.radioButtonRegisterEmployee);
+        radioButtonRegisterEmployer = findViewById(R.id.radioButtonRegisterEmployer);
+        radioGroupTypeWorker = findViewById(R.id.radioGroupTypeWorker);
+
 
     }
 
@@ -57,13 +60,54 @@ public class RegisterActivity extends AppCompatActivity {
        mAuth.signOut();
     }
 
-    public void onClickEmployer(View view) {
-        setTypeWorker(1);
+    private void regNewUser(){
+        mAuth.createUserWithEmailAndPassword(editTextEmail.getText().toString().trim(), editTextPassword.getText().toString().trim())
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("TAG", "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("name", editTextName.getText().toString());
+                            data.put("surname", editTextSurname.getText().toString());
+                            if (radioGroupTypeWorker.getCheckedRadioButtonId() == R.id.radioButtonRegisterEmployee) {
+                                typeWorker = 0;
+                            }
+                            else {
+                                typeWorker = 1;
+                            }
+                            data.put("type_worker", typeWorker);
+                            db.collection("users").document(mAuth.getUid())
+                                    .set(data)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("TAG", "DocumentSnapshot successfully written!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("TAG", "Error writing document", e);
+                                        }
+                                    });
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("TAG", "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+
+
     }
 
-    public void onClickEmployee(View view) {
-        setTypeWorker(0);
-    }
+
+
     private void setTypeWorker(int i) {
         DocumentReference update_type_worker = db.collection("users").document("users");
         update_type_worker.update("type_worker", i)
@@ -87,5 +131,9 @@ public class RegisterActivity extends AppCompatActivity {
             Intent intent = new Intent(RegisterActivity.this, WorkActivity.class);
             startActivity(intent);
         }
+    }
+
+    public void onClickFinishRegister(View view) {
+        regNewUser();
     }
 }
