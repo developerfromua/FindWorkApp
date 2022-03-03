@@ -89,19 +89,22 @@ public class RegisterActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             Log.d("TAG", "DocumentSnapshot successfully written!");
+                                            Intent intent = new Intent(RegisterActivity.this, WorkActivity.class);
+                                            startActivity(intent);
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             Log.w("TAG", "Error writing document", e);
+                                            Toast.makeText(RegisterActivity.this, "Что-то пошло не так", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("TAG", "createUserWithEmail:failure", task.getException());
                             if (task.getException() instanceof FirebaseAuthUserCollisionException){
-                                Toast.makeText(RegisterActivity.this, "User with this email already exists", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Пользователь с таким email уже существует", Toast.LENGTH_SHORT).show();
                             }
 
 //                            Toast.makeText(RegisterActivity.this, "Authentication failed.",

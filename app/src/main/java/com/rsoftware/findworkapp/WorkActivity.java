@@ -40,7 +40,7 @@ public class WorkActivity extends AppCompatActivity {
         if (back_pressed + TIME_DELAY > System.currentTimeMillis()) {
             this.finishAffinity();
         } else {
-            Toast.makeText(getBaseContext(), "Press once again to exit!",
+            Toast.makeText(getBaseContext(), "Нажмите дважды для выхода",
                     Toast.LENGTH_SHORT).show();
         }
         back_pressed = System.currentTimeMillis();
