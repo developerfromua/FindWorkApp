@@ -12,7 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
 
 public class DialogFragment extends androidx.fragment.app.DialogFragment {
-
+    int type_worker;
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -20,18 +20,22 @@ public class DialogFragment extends androidx.fragment.app.DialogFragment {
         String title = "Тип регистрации";
         String button1String = "Я ищу работу";
         String button2String = "Я работодатель";
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(title);  // заголовок
         builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(getActivity(), "Вы сделали правильный выбор",
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Вы сделали правильный выбор", Toast.LENGTH_LONG)
+                        .show();
+                ((MainActivity) getActivity()).employeeClicked();
+
             }
         });
         builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Toast.makeText(getActivity(), "Возможно вы правы", Toast.LENGTH_LONG)
                         .show();
+                ((MainActivity) getActivity()).employerClicked();
             }
         });
         builder.setCancelable(true);

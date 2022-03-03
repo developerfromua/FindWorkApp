@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private int RC_SIGN_IN = 1;
     DialogFragment dialogFragment;
     FragmentManager manager;
+    private int type_worker;
 
 
     @Override
@@ -111,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                             data.put("name", name);
                             data.put("surname", surname);
                             data.put("email", email);
+                            data.put("type_worker", type_worker);
                             db.collection("users").document(mAuth.getUid())
                                     .set(data)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -173,7 +175,8 @@ public class MainActivity extends AppCompatActivity {
       dialogFragment = new DialogFragment();
       manager = getSupportFragmentManager();
       dialogFragment.show(manager, "a");
-    //    signIn();
     }
+    public void employeeClicked() { type_worker = 0; signIn(); }
+    public void employerClicked() { type_worker = 1; signIn(); }
 
 }
