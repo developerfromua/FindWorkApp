@@ -74,6 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
                             data.put("name", editTextName.getText().toString());
                             data.put("surname", editTextSurname.getText().toString());
                             data.put("email", email);
+                            data.put("image", "");
                             String collectionPath;
                             if (radioGroupTypeWorker.getCheckedRadioButtonId() == R.id.radioButtonRegisterEmployee) {
                                 typeWorker = 0;
@@ -83,7 +84,6 @@ public class RegisterActivity extends AppCompatActivity {
                                 typeWorker = 1;
                                 collectionPath = "employers";
                             }
-                            data.put("type_worker", typeWorker);
                             db.collection(collectionPath).document(mAuth.getUid())
                                     .set(data)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {

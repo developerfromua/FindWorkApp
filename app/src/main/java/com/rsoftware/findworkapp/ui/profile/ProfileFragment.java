@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,8 +29,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.rsoftware.findworkapp.MainActivity;
 import com.rsoftware.findworkapp.R;
-
-import jp.wasabeef.blurry.Blurry;
+import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
 
@@ -37,11 +37,15 @@ public class ProfileFragment extends Fragment {
     private ImageView imageView;
     private TextView textViewNameSurname;
     private TextView textViewEmail;
+    private TextView textViewEmailLabel;
     private TextView textViewWelcomeLabel;
+    private TextView textViewResLabel;
     private Button button;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private ProgressBar progressBar;
+    private SwipeRefreshLayout refreshLayout;
+
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
     }
@@ -56,13 +60,30 @@ public class ProfileFragment extends Fragment {
         imageView.setImageResource(R.drawable.ic_user_avatar);
         button = (Button) view.findViewById(R.id.buttonLogout);
         textViewNameSurname = (TextView) view.findViewById(R.id.textViewNameSurname);
-        textViewEmail = (TextView)  view.findViewById(R.id.textViewUserEmail);
+        textViewEmail = (TextView)  view.findViewById(R.id.textViewEmail);
         textViewWelcomeLabel = (TextView) view.findViewById(R.id.textViewWelcomeLabel);
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
+        textViewEmailLabel = (TextView) view.findViewById(R.id.textViewUserEmail);
+        textViewResLabel = (TextView) view.findViewById(R.id.textViewUserRes);
+        updateUi();
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateUi();
+                refreshLayout.setRefreshing(false);
+            }
+        });
+
+        return view;
+    }
 
 
+    private void updateUi() {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
+
         if (firebaseUser == null) {
             button.setText("Войти или зарегистрироваться");
             button.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +93,13 @@ public class ProfileFragment extends Fragment {
                     startActivity(intent);
                 }
             });
+            textViewWelcomeLabel.setText("Авторизуйтесь, пожалуйста");
+            textViewNameSurname.setText("");
+            textViewEmail.setText("");
+            textViewEmailLabel.setText("");
+            textViewResLabel.setText("");
+            imageView.setImageResource(R.drawable.ic_user_avatar);
+            progressBar.setVisibility(View.GONE);
         }
         else {
             button.setOnClickListener(new View.OnClickListener() {
@@ -87,9 +115,6 @@ public class ProfileFragment extends Fragment {
                     }
                 }
             });
-        }
-        if (mAuth.getCurrentUser() != null) {
-            textViewWelcomeLabel.setText("Подключение...");
             DocumentReference docRef = db.collection("employees").document(mAuth.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -100,10 +125,16 @@ public class ProfileFragment extends Fragment {
                             Log.d("TAG", "DocumentSnapshot data: " + document.getData());
                             textViewWelcomeLabel.setText("Добро пожаловать, ");
                             textViewNameSurname.setText(document.get("name").toString() + " " + document.get("surname").toString());
-                            textViewEmail.append(document.get("email").toString());
+                            textViewEmail.setText(document.get("email").toString());
+                            if (!document.get("image").toString().isEmpty()) {
+                                Picasso.with(getContext())
+                                        .load(document.get("image").toString())
+                                        .placeholder(R.drawable.ic_user_avatar)
+                                        .error(R.drawable.ic_user_avatar)
+                                        .into(imageView);
+                            }
+                            Log.d("TAG", document.get("image").toString());
                             progressBar.setVisibility(View.GONE);
-
-
                         } else {
                             Log.d("TAG", "No such document");
                         }
@@ -113,15 +144,7 @@ public class ProfileFragment extends Fragment {
                 }
             });
         }
-        else {
-            textViewWelcomeLabel.setText("Авторизуйтесь, пожалуйста");
-            progressBar.setVisibility(View.GONE);
-
-        }
-
-        return view;
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

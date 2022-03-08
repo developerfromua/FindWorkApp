@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             String email = mAuth.getCurrentUser().getEmail();
                             String fullName = mAuth.getCurrentUser().getDisplayName();
+                            String image = mAuth.getCurrentUser().getPhotoUrl().toString();
                             String[] separated = fullName.split(" ");
                             String name = separated[0];
                             String surname = separated[1];
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                             data.put("name", name);
                             data.put("surname", surname);
                             data.put("email", email);
+                            data.put("image", image);
                             db.collection("employees").document(mAuth.getUid())
                                     .set(data)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
