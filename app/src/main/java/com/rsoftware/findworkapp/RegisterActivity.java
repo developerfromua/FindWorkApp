@@ -53,8 +53,6 @@ public class RegisterActivity extends AppCompatActivity {
         radioButtonRegisterEmployee = findViewById(R.id.radioButtonRegisterEmployee);
         radioButtonRegisterEmployer = findViewById(R.id.radioButtonRegisterEmployer);
         radioGroupTypeWorker = findViewById(R.id.radioGroupTypeWorker);
-
-
     }
 
     public void onClickLogOut(View view) {
@@ -76,14 +74,17 @@ public class RegisterActivity extends AppCompatActivity {
                             data.put("name", editTextName.getText().toString());
                             data.put("surname", editTextSurname.getText().toString());
                             data.put("email", email);
+                            String collectionPath;
                             if (radioGroupTypeWorker.getCheckedRadioButtonId() == R.id.radioButtonRegisterEmployee) {
                                 typeWorker = 0;
+                                collectionPath = "employees";
                             }
                             else {
                                 typeWorker = 1;
+                                collectionPath = "employers";
                             }
                             data.put("type_worker", typeWorker);
-                            db.collection("users").document(mAuth.getUid())
+                            db.collection(collectionPath).document(mAuth.getUid())
                                     .set(data)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -107,8 +108,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, "Пользователь с таким email уже существует", Toast.LENGTH_SHORT).show();
                             }
 
-//                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
-//                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                   Toast.LENGTH_SHORT).show();
 
                         }
                     }
@@ -118,31 +119,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-
-    private void setTypeWorker(int i) {
-        DocumentReference update_type_worker = db.collection("users").document("users");
-        update_type_worker.update("type_worker", i)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("TAG", "Updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("TAG", "Error updating document", e);
-                    }
-                });
-        if (i == 0) {
-            Intent intent = new Intent(RegisterActivity.this, WorkActivity.class);
-            startActivity(intent);
-        }
-        else {
-            Intent intent = new Intent(RegisterActivity.this, WorkActivity.class);
-            startActivity(intent);
-        }
-    }
 
     public void onClickFinishRegister(View view) {
         regNewUser();

@@ -4,18 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -32,6 +27,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -47,23 +44,23 @@ public class MainActivity extends AppCompatActivity {
     private int RC_SIGN_IN = 1;
     DialogFragment dialogFragment;
     FragmentManager manager;
-    private int type_worker;
+    private int typeUser;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.edit().putInt("typeUser", -1).apply();
+
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        if (firebaseUser != null) {
-            // User is signed in
-        } else {
-            // No user is signed in
-        }
+
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -72,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
     }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -89,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -108,12 +107,12 @@ public class MainActivity extends AppCompatActivity {
                             String[] separated = fullName.split(" ");
                             String name = separated[0];
                             String surname = separated[1];
+                            String collectionPath;
                             Map<String, Object> data = new HashMap<>();
                             data.put("name", name);
                             data.put("surname", surname);
                             data.put("email", email);
-                            data.put("type_worker", type_worker);
-                            db.collection("users").document(mAuth.getUid())
+                            db.collection("employees").document(mAuth.getUid())
                                     .set(data)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -142,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
     public void onClickLogIn(View view) {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
@@ -164,19 +164,28 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-}
+    }
 
     public void onClickRegister(View view) {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 
+
     public void onClickLogInGoogle(View view) {
-      dialogFragment = new DialogFragment();
-      manager = getSupportFragmentManager();
-      dialogFragment.show(manager, "a");
+        dialogFragment = new DialogFragment();
+        manager = getSupportFragmentManager();
+        dialogFragment.show(manager, "dialog");
     }
-    public void employeeClicked() { type_worker = 0; signIn(); }
-    public void employerClicked() { type_worker = 1; signIn(); }
+
+    public void employeeClicked() {
+        typeUser = 0;
+        signIn();
+    }
+
+    public void employerClicked() {
+        typeUser = 1;
+        signIn();
+    }
 
 }
