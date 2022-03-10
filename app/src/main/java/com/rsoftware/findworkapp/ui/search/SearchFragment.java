@@ -1,6 +1,7 @@
 package com.rsoftware.findworkapp.ui.search;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ public class SearchFragment extends Fragment {
         View root = binding.getRoot();
 
         final TextView textView = binding.textHome;
+
         searchViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -35,6 +37,7 @@ public class SearchFragment extends Fragment {
             }
         });
         return root;
+
     }
 
     @Override
@@ -42,5 +45,6 @@ public class SearchFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
 
 }

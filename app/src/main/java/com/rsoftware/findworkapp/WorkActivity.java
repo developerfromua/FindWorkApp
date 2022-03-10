@@ -37,12 +37,14 @@ public class WorkActivity extends AppCompatActivity {
     private static long back_pressed;
     @Override
     public void onBackPressed() {
-        if (back_pressed + TIME_DELAY > System.currentTimeMillis()) {
-            this.finishAffinity();
-        } else {
-            Toast.makeText(getBaseContext(), "Нажмите дважды для выхода",
-                    Toast.LENGTH_SHORT).show();
-        }
-        back_pressed = System.currentTimeMillis();
+
+            if (back_pressed + TIME_DELAY > System.currentTimeMillis()) {
+                this.finishAffinity();
+            } else {
+                Toast.makeText(getBaseContext(), "Нажмите дважды для выхода",
+                        Toast.LENGTH_SHORT).show();
+            }
+            back_pressed = System.currentTimeMillis();
     }
+
 }

@@ -60,6 +60,8 @@ public class ProfileFragment extends Fragment {
     private DrawerLayout drawerLayout;
     NavigationView navigationView;
 
+    private String email;
+
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
     }
@@ -74,14 +76,25 @@ public class ProfileFragment extends Fragment {
         imageView.setImageResource(R.drawable.ic_user_avatar);
         button = (Button) view.findViewById(R.id.buttonLogout);
         textViewNameSurname = (TextView) view.findViewById(R.id.textViewNameSurname);
-        textViewEmail = (TextView)  view.findViewById(R.id.textViewEmail);
+        textViewEmail = (TextView) view.findViewById(R.id.textViewEmail);
         textViewWelcomeLabel = (TextView) view.findViewById(R.id.textViewWelcomeLabel);
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
         textViewEmailLabel = (TextView) view.findViewById(R.id.textViewUserEmail);
         textViewResLabel = (TextView) view.findViewById(R.id.textViewUserRes);
         imageViewDrawerButton = (ImageView) view.findViewById(R.id.imageViewDrawerButton);
+
+
         drawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
 
+        try {
+            navigationView = (NavigationView) view.findViewById(R.id.nav_view);
+            View header = navigationView.getHeaderView(0);
+            TextView textViewDrawer = header.findViewById(R.id.TextViewTest);
+            textViewDrawer.setText("a");
+        }
+        catch (Exception e) {
+            Log.i("TAG", e.toString());
+        }
 
         imageViewDrawerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,10 +165,12 @@ public class ProfileFragment extends Fragment {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
+                            email = document.get("email").toString();
                             Log.d("TAG", "DocumentSnapshot data: " + document.getData());
                             textViewWelcomeLabel.setText("Добро пожаловать");
                             textViewNameSurname.setText(document.get("name").toString() + " " + document.get("surname").toString());
-                            textViewEmail.setText(document.get("email").toString());
+                            textViewEmail.setText(email);
+
                             if (!document.get("image").toString().isEmpty()) {
                                 Picasso.with(getContext())
                                         .load(document.get("image").toString())
