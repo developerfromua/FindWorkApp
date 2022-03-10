@@ -16,7 +16,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
@@ -29,7 +29,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

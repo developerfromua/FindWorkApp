@@ -3,12 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/drawable/ic_menu_icon.xml" value="0.3828125" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/drawable/ic_user_avatar.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/activity_post_register.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/activity_register.xml" value="0.33" />
+        <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/activity_register.xml" value="0.25" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/activity_work.xml" value="0.25" />
+        <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/app_bar_main.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/content_main.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/content_test.xml" value="0.23125" />
+        <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/drawer_layout.xml" value="0.23125" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/fifth_fragment.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/fourth_fragment.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/fragment_favourite.xml" value="0.20520833333333333" />
@@ -16,9 +21,13 @@
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/fragment_messages.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/fragment_notifications.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/fragment_profile.xml" value="0.33" />
+        <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/fragment_search.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/layout_item_profile_main_info.xml" value="0.33" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/layout_popup_register.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/layout_resume.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/nav_header_main.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/layout/nav_header_test.xml" value="0.33" />
+        <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/menu/activity_main_drawer.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/home/AndroidStudioProjects/FindWorkApp/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36666666666666664" />
       </map>
     </option>

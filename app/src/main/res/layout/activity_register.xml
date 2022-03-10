@@ -4,21 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#25A9E8"
     tools:context=".RegisterActivity">
-
-    <Button
-        android:id="@+id/buttonLogOut"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:onClick="onClickLogOut"
-        android:text="Выход"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonRegisterFinish" />
 
     <TextView
         android:id="@+id/textViewRegisterNameLabel"
@@ -28,7 +14,6 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:text="Введите ваше имя:"
-        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewRegisterDataLabel" />
@@ -54,7 +39,6 @@
         android:layout_marginTop="18dp"
         android:layout_marginEnd="16dp"
         android:text="Введите вашу фамилию:"
-        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextRegisterName" />
@@ -87,16 +71,16 @@
 
         <RadioButton
             android:id="@+id/radioButtonRegisterEmployer"
+            style="@android:style/Widget.CompoundButton.RadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
             android:text="Ищу работника" />
 
         <RadioButton
             android:id="@+id/radioButtonRegisterEmployee"
+            style="@android:style/Widget.CompoundButton.RadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
             android:checked="true"
             android:text="Ищу работу" />
     </RadioGroup>
@@ -109,7 +93,6 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
         android:text="Я:"
-        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -139,7 +122,6 @@
         android:layout_marginEnd="16dp"
         android:gravity="center"
         android:text="Расскажите о себе"
-        android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -154,7 +136,6 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:text="Email:"
-        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -180,7 +161,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="Пароль:"
-        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextRegisterEmail" />
@@ -202,9 +182,8 @@
         android:id="@+id/textViewRegisterMainDataLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         android:text="Данные для входа"
-        android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

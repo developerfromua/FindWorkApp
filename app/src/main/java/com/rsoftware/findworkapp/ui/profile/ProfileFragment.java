@@ -1,5 +1,7 @@
 package com.rsoftware.findworkapp.ui.profile;
 
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -8,20 +10,29 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -45,6 +56,9 @@ public class ProfileFragment extends Fragment {
     private FirebaseFirestore db;
     private ProgressBar progressBar;
     private SwipeRefreshLayout refreshLayout;
+    private ImageView imageViewDrawerButton;
+    private DrawerLayout drawerLayout;
+    NavigationView navigationView;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -65,6 +79,22 @@ public class ProfileFragment extends Fragment {
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
         textViewEmailLabel = (TextView) view.findViewById(R.id.textViewUserEmail);
         textViewResLabel = (TextView) view.findViewById(R.id.textViewUserRes);
+        imageViewDrawerButton = (ImageView) view.findViewById(R.id.imageViewDrawerButton);
+        drawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
+
+
+        imageViewDrawerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+             drawerLayout.openDrawer(GravityCompat.END); }
+                catch (Exception e) {
+                    Log.i("TAG", e.toString());
+                }
+            }
+        });
+
+
         updateUi();
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -123,7 +153,7 @@ public class ProfileFragment extends Fragment {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             Log.d("TAG", "DocumentSnapshot data: " + document.getData());
-                            textViewWelcomeLabel.setText("Добро пожаловать, ");
+                            textViewWelcomeLabel.setText("Добро пожаловать");
                             textViewNameSurname.setText(document.get("name").toString() + " " + document.get("surname").toString());
                             textViewEmail.setText(document.get("email").toString());
                             if (!document.get("image").toString().isEmpty()) {
@@ -134,13 +164,14 @@ public class ProfileFragment extends Fragment {
                                         .into(imageView);
                             }
                             Log.d("TAG", document.get("image").toString());
-                            progressBar.setVisibility(View.GONE);
+
                         } else {
                             Log.d("TAG", "No such document");
                         }
                     } else {
                         Log.d("TAG", "get failed with ", task.getException());
                     }
+                    progressBar.setVisibility(View.GONE);
                 }
             });
         }
