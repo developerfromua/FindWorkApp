@@ -27,8 +27,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -132,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("TAG", "signInWithCredential:success");
 
-                            Intent intent = new Intent(MainActivity.this, WorkActivity.class);
+                            Intent intent = new Intent(MainActivity.this, EmployeeWorkActivity.class);
                             startActivity(intent);
 
                         } else {
@@ -155,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("TAG", "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Intent intent = new Intent(MainActivity.this, WorkActivity.class);
+                            Intent intent = new Intent(MainActivity.this, EmployeeWorkActivity.class);
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.

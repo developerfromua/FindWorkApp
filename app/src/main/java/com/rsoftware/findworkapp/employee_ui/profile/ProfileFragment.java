@@ -1,4 +1,4 @@
-package com.rsoftware.findworkapp.ui.profile;
+package com.rsoftware.findworkapp.employee_ui.profile;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -10,23 +10,16 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +35,7 @@ import com.rsoftware.findworkapp.MainActivity;
 import com.rsoftware.findworkapp.R;
 import com.squareup.picasso.Picasso;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment{
 
     private ProfileViewModel mViewModel;
     private ImageView imageView;
@@ -52,14 +45,21 @@ public class ProfileFragment extends Fragment {
     private TextView textViewWelcomeLabel;
     private TextView textViewResLabel;
     private Button button;
+    // Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    // Progress bar & loaders
     private ProgressBar progressBar;
     private SwipeRefreshLayout refreshLayout;
+    // Drawer
     private ImageView imageViewDrawerButton;
     private DrawerLayout drawerLayout;
-    NavigationView navigationView;
+    private NavigationView navigationView;
+    private TextView textViewDrawerEmail;
+    private TextView textViewDrawerNameSurname;
+    private ImageView imageViewDrawerProfileImage;
 
+    private String nameSurname;
     private String email;
 
     public static ProfileFragment newInstance() {
@@ -88,21 +88,47 @@ public class ProfileFragment extends Fragment {
 
         try {
             navigationView = (NavigationView) view.findViewById(R.id.nav_view);
+            navigationView.bringToFront();
+            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.nav_logout:
+                            signOut(view);
+                            break;
+                        case R.id.nav_profile_edit:
+                            Intent intent = new Intent(view.getContext(), EditProfileActivity.class);
+                            startActivity(intent);
+                            break;
+                        case R.id.nav_change_profile:
+                            break;
+                    }
+                    drawerLayout.closeDrawer(GravityCompat.END);
+                    return false;
+                }
+            });
+
             View header = navigationView.getHeaderView(0);
-            TextView textViewDrawer = header.findViewById(R.id.TextViewTest);
-            textViewDrawer.setText("a");
-        }
-        catch (Exception e) {
+            textViewDrawerEmail = (TextView) header.findViewById(R.id.textViewDrawerEmail);
+            textViewDrawerNameSurname = (TextView) header.findViewById(R.id.textViewDrawerNameSurname);
+            imageViewDrawerProfileImage = (ImageView) header.findViewById(R.id.imageViewDrawerProfileImage);
+
+        } catch (Exception e) {
             Log.i("TAG", e.toString());
         }
 
         imageViewDrawerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-             drawerLayout.openDrawer(GravityCompat.END); }
-                catch (Exception e) {
-                    Log.i("TAG", e.toString());
+                if (mAuth.getCurrentUser()!=null) {
+                    try {
+                        drawerLayout.openDrawer(GravityCompat.END);
+                    } catch (Exception e) {
+                        Log.i("TAG", e.toString());
+                    }
+                }
+                else {
+                    Toast.makeText(view.getContext(), "Не авторизован", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -120,7 +146,6 @@ public class ProfileFragment extends Fragment {
 
         return view;
     }
-
 
     private void updateUi() {
         mAuth = FirebaseAuth.getInstance();
@@ -143,19 +168,11 @@ public class ProfileFragment extends Fragment {
             textViewResLabel.setText("");
             imageView.setImageResource(R.drawable.ic_user_avatar);
             progressBar.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mAuth.signOut();
-                    FirebaseUser firebaseUserLogged = mAuth.getCurrentUser();
-                    if (firebaseUserLogged == null) {
-                        Intent intent = new Intent(view.getContext(), MainActivity.class);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(view.getContext(), "Что-то пошло не так", Toast.LENGTH_SHORT).show();
-                    }
+                    signOut(view);
                 }
             });
             DocumentReference docRef = db.collection("employees").document(mAuth.getUid());
@@ -165,20 +182,26 @@ public class ProfileFragment extends Fragment {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            email = document.get("email").toString();
                             Log.d("TAG", "DocumentSnapshot data: " + document.getData());
                             textViewWelcomeLabel.setText("Добро пожаловать");
-                            textViewNameSurname.setText(document.get("name").toString() + " " + document.get("surname").toString());
+                            email = document.get("email").toString();
+                            nameSurname = document.get("name").toString() + " " + document.get("surname").toString();
+                            textViewNameSurname.setText(nameSurname);
                             textViewEmail.setText(email);
-
+                            textViewDrawerEmail.setText(email);
+                            textViewDrawerNameSurname.setText(nameSurname);
                             if (!document.get("image").toString().isEmpty()) {
                                 Picasso.with(getContext())
                                         .load(document.get("image").toString())
                                         .placeholder(R.drawable.ic_user_avatar)
                                         .error(R.drawable.ic_user_avatar)
                                         .into(imageView);
+                                Picasso.with(getContext())
+                                        .load(document.get("image").toString())
+                                        .placeholder(R.drawable.ic_user_avatar)
+                                        .error(R.drawable.ic_user_avatar)
+                                        .into(imageViewDrawerProfileImage);
                             }
-                            Log.d("TAG", document.get("image").toString());
 
                         } else {
                             Log.d("TAG", "No such document");
@@ -192,11 +215,24 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    private void signOut(View view) {
+        mAuth.signOut();
+        FirebaseUser firebaseUserLogged = mAuth.getCurrentUser();
+        if (firebaseUserLogged == null) {
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            startActivity(intent);
+        } else {
+            Toast.makeText(view.getContext(), "Что-то пошло не так", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         // TODO: Use the ViewModel
     }
+
+
 
 }

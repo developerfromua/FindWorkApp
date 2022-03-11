@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FindWorkApp">
         <activity
+            android:name=".employee_ui.profile.EditProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
@@ -21,7 +24,7 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".WorkActivity"
+            android:name=".EmployeeWorkActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

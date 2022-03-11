@@ -1,4 +1,4 @@
-package com.rsoftware.findworkapp.ui.messages;
+package com.rsoftware.findworkapp.employee_ui.messages;
 
 import androidx.lifecycle.ViewModel;
 

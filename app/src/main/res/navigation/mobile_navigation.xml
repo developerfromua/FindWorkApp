@@ -7,30 +7,30 @@
 
     <fragment
         android:id="@+id/navigation_search"
-        android:name="com.rsoftware.findworkapp.ui.search.SearchFragment"
+        android:name="com.rsoftware.findworkapp.employee_ui.search.SearchFragment"
         android:label="Поиск"
         tools:layout="@layout/fragment_search" />
 
     <fragment
         android:id="@+id/navigation_favourite"
-        android:name="com.rsoftware.findworkapp.ui.favourite.FavouriteFragment"
+        android:name="com.rsoftware.findworkapp.employee_ui.favourite.FavouriteFragment"
         android:label="Отклики"
         tools:layout="@layout/fragment_favourite" />
 
     <fragment
         android:id="@+id/navigation_responses"
-        android:name="com.rsoftware.findworkapp.ui.responses.ResponsesFragment"
+        android:name="com.rsoftware.findworkapp.employee_ui.responses.ResponsesFragment"
         android:label="Избранное"
         tools:layout="@layout/fragment_responses" />
 
     <fragment
         android:id="@+id/navigation_messages"
-        android:name="com.rsoftware.findworkapp.ui.messages.MessagesFragment"
+        android:name="com.rsoftware.findworkapp.employee_ui.messages.MessagesFragment"
         android:label="Сообщения"
         tools:layout="@layout/fragment_responses" />
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.rsoftware.findworkapp.ui.profile.ProfileFragment"
+        android:name="com.rsoftware.findworkapp.employee_ui.profile.ProfileFragment"
         android:label="Профиль"
         tools:layout="@layout/fragment_responses" />
 </navigation>

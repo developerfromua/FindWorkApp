@@ -2,6 +2,7 @@ package com.rsoftware.findworkapp;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -13,15 +14,15 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.rsoftware.findworkapp.databinding.ActivityWorkBinding;
+import com.rsoftware.findworkapp.databinding.ActivityEmployeeWorkBinding;
 
-public class WorkActivity extends AppCompatActivity {
-    private ActivityWorkBinding binding;
+public class EmployeeWorkActivity extends AppCompatActivity {
+    private ActivityEmployeeWorkBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityWorkBinding.inflate(getLayoutInflater());
+        binding = ActivityEmployeeWorkBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -46,5 +47,6 @@ public class WorkActivity extends AppCompatActivity {
             }
             back_pressed = System.currentTimeMillis();
     }
+
 
 }

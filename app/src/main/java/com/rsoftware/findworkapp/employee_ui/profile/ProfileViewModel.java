@@ -1,4 +1,4 @@
-package com.rsoftware.findworkapp.ui.profile;
+package com.rsoftware.findworkapp.employee_ui.profile;
 
 import androidx.lifecycle.ViewModel;
 

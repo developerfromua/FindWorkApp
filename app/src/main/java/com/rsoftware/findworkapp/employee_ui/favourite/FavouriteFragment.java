@@ -1,4 +1,4 @@
-package com.rsoftware.findworkapp.ui.favourite;
+package com.rsoftware.findworkapp.employee_ui.favourite;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -13,8 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rsoftware.findworkapp.R;
-import com.rsoftware.findworkapp.ui.messages.MessagesFragment;
-import com.rsoftware.findworkapp.ui.messages.MessagesViewModel;
+import com.rsoftware.findworkapp.employee_ui.messages.MessagesFragment;
+import com.rsoftware.findworkapp.employee_ui.messages.MessagesViewModel;
 
 public class FavouriteFragment extends Fragment {
 
