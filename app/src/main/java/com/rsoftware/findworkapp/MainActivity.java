@@ -183,17 +183,19 @@ public class MainActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         DocumentSnapshot document = task.getResult();
                                         loginTypeUser = document.get("typeUser").toString();
+                                        if (loginTypeUser.equals("employee")) {
+                                            Log.i("TAG", "Equal");
+                                            Intent intent = new Intent(MainActivity.this, EmployeeWorkActivity.class);
+                                            startActivity(intent);
+                                        }
+                                        else {
+                                            Log.i("TAG", "not equal");
+                                            Intent intent = new Intent(MainActivity.this, EmployerWorkActivity.class);
+                                            startActivity(intent);
+                                        }
                                     }
                                 }
                             });
-                            if (loginTypeUser.equals("employee")) {
-                                Intent intent = new Intent(MainActivity.this, EmployeeWorkActivity.class);
-                                startActivity(intent);
-                            }
-                            else {
-                                Intent intent = new Intent(MainActivity.this, EmployerWorkActivity.class);
-                                startActivity(intent);
-                            }
 
                         } else {
                             // If sign in fails, display a message to the user.
