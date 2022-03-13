@@ -166,46 +166,49 @@ public class MainActivity extends AppCompatActivity {
     public void onClickLogIn(View view) {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+        if (!email.isEmpty() && !password.isEmpty()) {
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("TAG", "signInWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("TAG", "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-
-                            DocumentReference docRef = db.collection("users").document(mAuth.getUid());
-                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        DocumentSnapshot document = task.getResult();
-                                        loginTypeUser = document.get("typeUser").toString();
-                                        if (loginTypeUser.equals("employee")) {
-                                            Log.i("TAG", "Equal");
-                                            Intent intent = new Intent(MainActivity.this, EmployeeWorkActivity.class);
-                                            startActivity(intent);
-                                        }
-                                        else {
-                                            Log.i("TAG", "not equal");
-                                            Intent intent = new Intent(MainActivity.this, EmployerWorkActivity.class);
-                                            startActivity(intent);
+                                DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+                                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            loginTypeUser = document.get("typeUser").toString();
+                                            if (loginTypeUser.equals("employee")) {
+                                                Log.i("TAG", "Equal");
+                                                Intent intent = new Intent(MainActivity.this, EmployeeWorkActivity.class);
+                                                startActivity(intent);
+                                            } else {
+                                                Log.i("TAG", "not equal");
+                                                Intent intent = new Intent(MainActivity.this, EmployerWorkActivity.class);
+                                                startActivity(intent);
+                                            }
                                         }
                                     }
-                                }
-                            });
+                                });
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("TAG", "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w("TAG", "signInWithEmail:failure", task.getException());
+                                Toast.makeText(MainActivity.this, "Неправильный логин или пароль",
+                                        Toast.LENGTH_SHORT).show();
 
+                            }
                         }
-                    }
-                });
+                    });
+        }
+        else {
+            Toast.makeText(MainActivity.this, "Проверьте все поля", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void checkUserMain(){
