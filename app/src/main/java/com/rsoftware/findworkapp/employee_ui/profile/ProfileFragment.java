@@ -40,11 +40,9 @@ public class ProfileFragment extends Fragment{
     private ProfileViewModel mViewModel;
     private ImageView imageView;
     private TextView textViewNameSurname;
-    private TextView textViewEmail;
-    private TextView textViewEmailLabel;
     private TextView textViewWelcomeLabel;
     private TextView textViewResLabel;
-    private Button button;
+    private Button buttonAuth;
     // Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -74,20 +72,18 @@ public class ProfileFragment extends Fragment{
         progressBar.setVisibility(View.VISIBLE);
         imageView = (ImageView) view.findViewById(R.id.imageViewProfileImage);
         imageView.setImageResource(R.drawable.ic_user_avatar);
-        button = (Button) view.findViewById(R.id.buttonLogout);
         textViewNameSurname = (TextView) view.findViewById(R.id.textViewNameSurname);
-        textViewEmail = (TextView) view.findViewById(R.id.textViewEmail);
         textViewWelcomeLabel = (TextView) view.findViewById(R.id.textViewWelcomeLabel);
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
-        textViewEmailLabel = (TextView) view.findViewById(R.id.textViewUserEmail);
         textViewResLabel = (TextView) view.findViewById(R.id.textViewUserRes);
         imageViewDrawerButton = (ImageView) view.findViewById(R.id.imageViewDrawerButton);
+        buttonAuth = (Button) view.findViewById(R.id.buttonAuth);
 
 
         drawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
 
         try {
-            navigationView = (NavigationView) view.findViewById(R.id.nav_view);
+            navigationView = (NavigationView) view.findViewById(R.id.nav_view_employee);
             navigationView.bringToFront();
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -153,29 +149,23 @@ public class ProfileFragment extends Fragment{
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
         if (firebaseUser == null) {
-            button.setText("Войти или зарегистрироваться");
-            button.setOnClickListener(new View.OnClickListener() {
+            textViewWelcomeLabel.setText("Авторизуйтесь, пожалуйста");
+            textViewNameSurname.setText("");
+            textViewResLabel.setText("");
+            imageView.setImageResource(R.drawable.ic_user_avatar);
+            buttonAuth.setVisibility(View.VISIBLE);
+            buttonAuth.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(view.getContext(), MainActivity.class);
                     startActivity(intent);
                 }
             });
-            textViewWelcomeLabel.setText("Авторизуйтесь, пожалуйста");
-            textViewNameSurname.setText("");
-            textViewEmail.setText("");
-            textViewEmailLabel.setText("");
-            textViewResLabel.setText("");
-            imageView.setImageResource(R.drawable.ic_user_avatar);
             progressBar.setVisibility(View.GONE);
-        } else {
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    signOut(view);
-                }
-            });
-            DocumentReference docRef = db.collection("employees").document(mAuth.getUid());
+        }
+        else {
+            buttonAuth.setVisibility(View.INVISIBLE);
+            DocumentReference docRef = db.collection("users").document(mAuth.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -187,7 +177,6 @@ public class ProfileFragment extends Fragment{
                             email = document.get("email").toString();
                             nameSurname = document.get("name").toString() + " " + document.get("surname").toString();
                             textViewNameSurname.setText(nameSurname);
-                            textViewEmail.setText(email);
                             textViewDrawerEmail.setText(email);
                             textViewDrawerNameSurname.setText(nameSurname);
                             if (!document.get("image").toString().isEmpty()) {
@@ -213,7 +202,8 @@ public class ProfileFragment extends Fragment{
                 }
             });
         }
-    }
+        }
+
 
     private void signOut(View view) {
         mAuth.signOut();

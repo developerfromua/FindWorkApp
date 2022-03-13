@@ -1,13 +1,10 @@
 package com.rsoftware.findworkapp;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -24,7 +21,7 @@ public class EmployeeWorkActivity extends AppCompatActivity {
 
         binding = ActivityEmployeeWorkBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+        BottomNavigationView navView = findViewById(R.id.nav_view_employee);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -32,7 +29,7 @@ public class EmployeeWorkActivity extends AppCompatActivity {
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_work);
 
-        NavigationUI.setupWithNavController(binding.navView, navController);
+        NavigationUI.setupWithNavController(binding.navViewEmployee, navController);
     }
     private static final int TIME_DELAY = 2000;
     private static long back_pressed;

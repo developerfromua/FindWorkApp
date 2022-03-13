@@ -12,26 +12,38 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FindWorkApp">
         <activity
+            android:name=".activityempty"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+        <activity
+            android:name=".EmployerWorkActivity"
+            android:exported="false" />
+        <activity
             android:name=".employee_ui.profile.EditProfileActivity"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".EmployeeWorkActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".EmployeeWorkActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:name=".MainActivity"
+            android:exported="true"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

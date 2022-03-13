@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -27,6 +28,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -40,9 +43,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextPassword;
     private GoogleSignInClient mGoogleSignInClient;
     private int RC_SIGN_IN = 1;
+    private ProgressBar progressBar;
     DialogFragment dialogFragment;
     FragmentManager manager;
-    private int typeUser;
+    private String typeUser = "";
 
 
     @Override
@@ -51,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         preferences.edit().putInt("typeUser", -1).apply();
-
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         editTextEmail = findViewById(R.id.editTextEmail);
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
+   
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -93,46 +96,64 @@ public class MainActivity extends AppCompatActivity {
 
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+
                         if (task.isSuccessful()) {
+                            checkUserMain();
+
                             FirebaseUser user = mAuth.getCurrentUser();
-                            String email = mAuth.getCurrentUser().getEmail();
-                            String fullName = mAuth.getCurrentUser().getDisplayName();
-                            String image = mAuth.getCurrentUser().getPhotoUrl().toString();
-                            String[] separated = fullName.split(" ");
-                            String name = separated[0];
-                            String surname = separated[1];
-                            String collectionPath;
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("name", name);
-                            data.put("surname", surname);
-                            data.put("email", email);
-                            data.put("image", image);
-                            db.collection("employees").document(mAuth.getUid())
-                                    .set(data)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d("TAG", "DocumentSnapshot successfully written!");
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w("TAG", "Error writing document", e);
-                                            Toast.makeText(MainActivity.this, "Что-то пошло не так", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("TAG", "signInWithCredential:success");
+                            Log.i("TAG", "type: " + typeUser);
+                            if (typeUser.equals("employee") || typeUser.equals("employer")) {
 
-                            Intent intent = new Intent(MainActivity.this, EmployeeWorkActivity.class);
-                            startActivity(intent);
+                                String email = mAuth.getCurrentUser().getEmail();
+                                String fullName = mAuth.getCurrentUser().getDisplayName();
+                                String image = mAuth.getCurrentUser().getPhotoUrl().toString();
+                                String[] separated = fullName.split(" ");
+                                String name = separated[0];
+                                String surname = separated[1];
+                                String collectionPath;
+                                Map<String, Object> data = new HashMap<>();
 
+                                data.put("name", name);
+                                data.put("surname", surname);
+                                data.put("email", email);
+                                data.put("image", image);
+                                data.put("typeUser", typeUser);
+
+                                db.collection("users").document(mAuth.getUid())
+                                        .set(data)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                               if (typeUser.equals("employee")) {
+                                                   startActivity(new Intent(MainActivity.this, EmployeeWorkActivity.class));
+                                                   MainActivity.this.overridePendingTransition(0, 0);
+                                                   Log.d("TAG", "DocumentSnapshot successfully written!");
+                                               }
+                                               else {
+                                                   startActivity(new Intent(MainActivity.this, EmployerWorkActivity.class));
+                                                   MainActivity.this.overridePendingTransition(0, 0);
+                                                   Log.d("TAG", "DocumentSnapshot successfully written!");
+                                               }
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("TAG", "Error writing document", e);
+                                                Toast.makeText(MainActivity.this, "Что-то пошло не так", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("TAG", "signInWithCredential:success");
+
+                            }
+                            else {
+                                mAuth.signOut();
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("TAG", "signInWithCredential:failure", task.getException());
@@ -166,6 +187,45 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    private void checkUserMain(){
+        DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        typeUser = document.get("typeUser").toString();
+                        Log.i("TAG", "from document: " + typeUser);
+                        if (typeUser.equals("employee")) {
+                            typeUser = "employee";
+                            signIn();
+                            Log.i("TAG", "set: " + typeUser);
+                        }
+                        else if (typeUser.equals("employer")){
+                            typeUser = "employer";
+                            signIn();
+                            Log.i("TAG", typeUser);
+                        }
+                        else {
+                            typeUser = "noFieldOrDocument";
+                            Log.i("TAG", typeUser);
+                            showDialog();
+                        }
+                    }
+                    else {
+
+                        typeUser = "noFieldOrDocument";
+                        showDialog();
+                        Log.d("TAG", "No such document");
+                    }
+                } else {
+                    Log.d("TAG", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
     public void onClickRegister(View view) {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
@@ -173,18 +233,23 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onClickLogInGoogle(View view) {
+        signIn();
+
+    }
+
+    private void showDialog() {
         dialogFragment = new DialogFragment();
         manager = getSupportFragmentManager();
         dialogFragment.show(manager, "dialog");
     }
 
     public void employeeClicked() {
-        typeUser = 0;
+        typeUser = "employee";
         signIn();
     }
 
     public void employerClicked() {
-        typeUser = 1;
+        typeUser = "employer";
         signIn();
     }
 
