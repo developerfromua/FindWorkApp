@@ -36,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     private RadioGroup radioGroupTypeWorker;
     private RadioButton radioButtonRegisterEmployee;
     private RadioButton radioButtonRegisterEmployer;
-    private int typeWorker;
+    private String typeWorker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +51,6 @@ public class RegisterActivity extends AppCompatActivity {
         radioButtonRegisterEmployee = findViewById(R.id.radioButtonRegisterEmployee);
         radioButtonRegisterEmployer = findViewById(R.id.radioButtonRegisterEmployer);
         radioGroupTypeWorker = findViewById(R.id.radioGroupTypeWorker);
-    }
-
-    public void onClickLogOut(View view) {
-       mAuth.signOut();
     }
 
     private void regNewUser(){
@@ -73,23 +69,29 @@ public class RegisterActivity extends AppCompatActivity {
                             data.put("surname", editTextSurname.getText().toString());
                             data.put("email", email);
                             data.put("image", "");
+
                             String collectionPath;
                             if (radioGroupTypeWorker.getCheckedRadioButtonId() == R.id.radioButtonRegisterEmployee) {
-                                typeWorker = 0;
-                                collectionPath = "employees";
+                                typeWorker = "employee";
                             }
                             else {
-                                typeWorker = 1;
-                                collectionPath = "employers";
+                                typeWorker = "employer";
                             }
-                            db.collection(collectionPath).document(mAuth.getUid())
+                            data.put("typeUser", typeWorker);
+                            db.collection("users").document(mAuth.getUid())
                                     .set(data)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             Log.d("TAG", "DocumentSnapshot successfully written!");
-                                            Intent intent = new Intent(RegisterActivity.this, EmployeeWorkActivity.class);
-                                            startActivity(intent);
+                                            if (typeWorker.equals("employee")) {
+                                                Intent intent = new Intent(RegisterActivity.this, EmployeeWorkActivity.class);
+                                                startActivity(intent);
+                                            }
+                                            else{
+                                                Intent intent = new Intent(RegisterActivity.this, EmployerWorkActivity.class);
+                                                startActivity(intent);
+                                            }
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
@@ -115,8 +117,6 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     }
-
-
 
     public void onClickFinishRegister(View view) {
         regNewUser();

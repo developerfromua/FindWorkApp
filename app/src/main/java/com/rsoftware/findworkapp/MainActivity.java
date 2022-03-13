@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     DialogFragment dialogFragment;
     FragmentManager manager;
     private String typeUser = "";
-
+    private String loginTypeUser = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickLogIn(View view) {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -174,8 +175,26 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("TAG", "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Intent intent = new Intent(MainActivity.this, EmployeeWorkActivity.class);
-                            startActivity(intent);
+
+                            DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        loginTypeUser = document.get("typeUser").toString();
+                                    }
+                                }
+                            });
+                            if (loginTypeUser.equals("employee")) {
+                                Intent intent = new Intent(MainActivity.this, EmployeeWorkActivity.class);
+                                startActivity(intent);
+                            }
+                            else {
+                                Intent intent = new Intent(MainActivity.this, EmployerWorkActivity.class);
+                                startActivity(intent);
+                            }
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("TAG", "signInWithEmail:failure", task.getException());
