@@ -17,7 +17,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="textEmailAddress"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -132,11 +132,11 @@
 
     <Button
         android:id="@+id/buttonLoginGoogle"
-        android:onClick="onClickLogInGoogle"
         style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
         android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:text="Войти через Google"
+        android:onClick="onClickLogInGoogle"
+        android:text="Войти или зарегистрироваться через Google"
         app:icon="@drawable/ic_home_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

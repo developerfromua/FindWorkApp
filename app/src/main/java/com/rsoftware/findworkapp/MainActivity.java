@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager manager;
     private String typeUser = "";
     private String loginTypeUser = "";
+    String emailRegex = "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" + "\\@" + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" + "(" + "\\." + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" + ")+";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickLogIn(View view) {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
-        if (!email.isEmpty() && !password.isEmpty()) {
+        if (!email.isEmpty() && !password.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches())  {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -207,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
         else {
-            Toast.makeText(MainActivity.this, "Проверьте все поля", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Проверьте правильность ввода", Toast.LENGTH_SHORT).show();
         }
     }
 
