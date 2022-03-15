@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,11 +32,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.rsoftware.findworkapp.EmployeeWorkActivity;
 import com.rsoftware.findworkapp.MainActivity;
 import com.rsoftware.findworkapp.R;
+import com.rsoftware.findworkapp.activityempty;
 import com.squareup.picasso.Picasso;
 
-public class ProfileFragment extends Fragment{
+import java.util.HashMap;
+import java.util.Map;
+
+public class ProfileFragment extends Fragment {
 
     private ProfileViewModel mViewModel;
     private ImageView imageView;
@@ -95,8 +101,10 @@ public class ProfileFragment extends Fragment{
                         case R.id.nav_profile_edit:
                             Intent intent = new Intent(view.getContext(), EditProfileActivity.class);
                             startActivity(intent);
+                            getActivity().overridePendingTransition(0, 0);
                             break;
                         case R.id.nav_change_profile:
+                            changeProfileType(view);
                             break;
                     }
                     drawerLayout.closeDrawer(GravityCompat.END);
@@ -116,14 +124,13 @@ public class ProfileFragment extends Fragment{
         imageViewDrawerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mAuth.getCurrentUser()!=null) {
+                if (mAuth.getCurrentUser() != null) {
                     try {
                         drawerLayout.openDrawer(GravityCompat.END);
                     } catch (Exception e) {
                         Log.i("TAG", e.toString());
                     }
-                }
-                else {
+                } else {
                     Toast.makeText(view.getContext(), "Не авторизован", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -141,6 +148,12 @@ public class ProfileFragment extends Fragment{
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUi();
     }
 
     private void updateUi() {
@@ -162,8 +175,7 @@ public class ProfileFragment extends Fragment{
                 }
             });
             progressBar.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             buttonAuth.setVisibility(View.INVISIBLE);
             DocumentReference docRef = db.collection("users").document(mAuth.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -202,7 +214,7 @@ public class ProfileFragment extends Fragment{
                 }
             });
         }
-        }
+    }
 
 
     private void signOut(View view) {
@@ -216,13 +228,25 @@ public class ProfileFragment extends Fragment{
         }
     }
 
+    private void changeProfileType(View view) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("typeUser", "employer");
+        db.collection("users").document(mAuth.getUid())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        startActivity(new Intent(view.getContext(), activityempty.class));
+                    }
+                });
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         // TODO: Use the ViewModel
     }
-
 
 
 }
