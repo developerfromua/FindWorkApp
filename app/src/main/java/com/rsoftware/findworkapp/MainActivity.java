@@ -42,13 +42,14 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextEmail;
     private EditText editTextPassword;
     private GoogleSignInClient mGoogleSignInClient;
-    private int RC_SIGN_IN = 1;
+    private final int RC_SIGN_IN = 1;
     private ProgressBar progressBar;
     DialogFragment dialogFragment;
     FragmentManager manager;
     private String typeUser = "";
     private String loginTypeUser = "";
     String emailRegex = "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" + "\\@" + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" + "(" + "\\." + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" + ")+";
+    private String typeAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,58 +104,108 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
-                            checkUserMain();
+                            if (typeUser.equals("")) {
+                                DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+                                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+
+                                                typeUser = document.get("typeUser").toString();
+                                                Log.i("TAG", "from document: " + typeUser);
+                                                if (typeUser.equals("employee")) {
+                                                    typeAuth = "login";
+                                                    typeUser = "employee";
+                                                    signIn();
+                                                    Log.i("TAG", "set: " + typeUser);
+                                                } else if (typeUser.equals("employer")) {
+                                                    typeAuth = "login";
+                                                    typeUser = "employer";
+                                                    signIn();
+                                                    Log.i("TAG", typeUser);
+                                                } else {
+                                                    typeAuth = "register";
+                                                    typeUser = "noFieldOrDocument";
+                                                    Log.i("TAG", typeUser);
+                                                    showDialog();
+                                                }
+                                            } else {
+                                                typeAuth = "register";
+                                                typeUser = "noFieldOrDocument";
+                                                showDialog();
+                                                Log.d("TAG", "No such document");
+                                            }
+                                        } else {
+                                            Log.d("TAG", "get failed with ", task.getException());
+                                        }
+                                    }
+                                });
+                            }
 
                             FirebaseUser user = mAuth.getCurrentUser();
                             Log.i("TAG", "type: " + typeUser);
                             if (typeUser.equals("employee") || typeUser.equals("employer")) {
+                                if (typeAuth.equals("register")) {
+                                    String email = mAuth.getCurrentUser().getEmail();
+                                    String fullName = mAuth.getCurrentUser().getDisplayName();
+                                    String image = mAuth.getCurrentUser().getPhotoUrl().toString();
+                                    String[] separated = fullName.split(" ");
+                                    String name = separated[0];
+                                    String surname = separated[1];
+                                    String collectionPath;
+                                    Map<String, Object> data = new HashMap<>();
 
-                                String email = mAuth.getCurrentUser().getEmail();
-                                String fullName = mAuth.getCurrentUser().getDisplayName();
-                                String image = mAuth.getCurrentUser().getPhotoUrl().toString();
-                                String[] separated = fullName.split(" ");
-                                String name = separated[0];
-                                String surname = separated[1];
-                                String collectionPath;
-                                Map<String, Object> data = new HashMap<>();
+                                    data.put("name", name);
+                                    data.put("surname", surname);
+                                    data.put("email", email);
+                                    data.put("image", image);
+                                    data.put("typeUser", typeUser);
 
-                                data.put("name", name);
-                                data.put("surname", surname);
-                                data.put("email", email);
-                                data.put("image", image);
-                                data.put("typeUser", typeUser);
+                                    db.collection("users").document(mAuth.getUid())
+                                            .set(data)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    if (typeUser.equals("employee")) {
+                                                        startActivity(new Intent(MainActivity.this, EmployeeWorkActivity.class));
+                                                        MainActivity.this.overridePendingTransition(0, 0);
+                                                        Log.d("TAG", "DocumentSnapshot successfully written!");
+                                                    } else {
+                                                        startActivity(new Intent(MainActivity.this, EmployerWorkActivity.class));
+                                                        MainActivity.this.overridePendingTransition(0, 0);
+                                                        Log.d("TAG", "DocumentSnapshot successfully written!");
+                                                    }
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("TAG", "Error writing document", e);
+                                                    Toast.makeText(MainActivity.this, "Что-то пошло не так", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d("TAG", "signInWithCredential:success");
 
-                                db.collection("users").document(mAuth.getUid())
-                                        .set(data)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                               if (typeUser.equals("employee")) {
-                                                   startActivity(new Intent(MainActivity.this, EmployeeWorkActivity.class));
-                                                   MainActivity.this.overridePendingTransition(0, 0);
-                                                   Log.d("TAG", "DocumentSnapshot successfully written!");
-                                               }
-                                               else {
-                                                   startActivity(new Intent(MainActivity.this, EmployerWorkActivity.class));
-                                                   MainActivity.this.overridePendingTransition(0, 0);
-                                                   Log.d("TAG", "DocumentSnapshot successfully written!");
-                                               }
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("TAG", "Error writing document", e);
-                                                Toast.makeText(MainActivity.this, "Что-то пошло не так", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d("TAG", "signInWithCredential:success");
+                                }
+                                else {
+                                    if (typeUser.equals("employee")) {
+                                        startActivity(new Intent(MainActivity.this, EmployeeWorkActivity.class));
+                                        MainActivity.this.overridePendingTransition(0, 0);
+                                        Log.d("TAG", "DocumentSnapshot successfully written!");
+                                    } else {
+                                        startActivity(new Intent(MainActivity.this, EmployerWorkActivity.class));
+                                        MainActivity.this.overridePendingTransition(0, 0);
+                                        Log.d("TAG", "DocumentSnapshot successfully written!");
+                                    }
+                                }
 
                             }
                             else {
-                                mAuth.signOut();
-                            }
+                                    mAuth.signOut();
+                                }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("TAG", "signInWithCredential:failure", task.getException());
@@ -220,26 +271,30 @@ public class MainActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+
                         typeUser = document.get("typeUser").toString();
                         Log.i("TAG", "from document: " + typeUser);
                         if (typeUser.equals("employee")) {
+                            typeAuth = "login";
                             typeUser = "employee";
                             signIn();
                             Log.i("TAG", "set: " + typeUser);
                         }
                         else if (typeUser.equals("employer")){
+                            typeAuth = "login";
                             typeUser = "employer";
                             signIn();
                             Log.i("TAG", typeUser);
                         }
                         else {
+                            typeAuth = "register";
                             typeUser = "noFieldOrDocument";
                             Log.i("TAG", typeUser);
                             showDialog();
                         }
                     }
                     else {
-
+                        typeAuth = "register";
                         typeUser = "noFieldOrDocument";
                         showDialog();
                         Log.d("TAG", "No such document");
