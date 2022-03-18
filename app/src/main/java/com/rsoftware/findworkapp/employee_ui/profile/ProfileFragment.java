@@ -17,25 +17,26 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.rsoftware.findworkapp.EmployeeWorkActivity;
+import com.rsoftware.findworkapp.AddResumeActivity;
 import com.rsoftware.findworkapp.MainActivity;
 import com.rsoftware.findworkapp.R;
-import com.rsoftware.findworkapp.activityempty;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
@@ -47,7 +48,6 @@ public class ProfileFragment extends Fragment {
     private ImageView imageView;
     private TextView textViewNameSurname;
     private TextView textViewWelcomeLabel;
-    private TextView textViewResLabel;
     private Button buttonAuth;
     // Firebase
     private FirebaseAuth mAuth;
@@ -62,7 +62,8 @@ public class ProfileFragment extends Fragment {
     private TextView textViewDrawerEmail;
     private TextView textViewDrawerNameSurname;
     private ImageView imageViewDrawerProfileImage;
-
+    private FloatingActionButton buttonAddResume;
+    private ShimmerFrameLayout shimmerContainer;
     private String nameSurname;
     private String email;
 
@@ -75,16 +76,23 @@ public class ProfileFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
+      //  progressBar.setVisibility(View.VISIBLE);
         imageView = (ImageView) view.findViewById(R.id.imageViewProfileImage);
-        imageView.setImageResource(R.drawable.ic_user_avatar);
         textViewNameSurname = (TextView) view.findViewById(R.id.textViewNameSurname);
         textViewWelcomeLabel = (TextView) view.findViewById(R.id.textViewWelcomeLabel);
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
-        textViewResLabel = (TextView) view.findViewById(R.id.textViewUserRes);
         imageViewDrawerButton = (ImageView) view.findViewById(R.id.imageViewDrawerButton);
         buttonAuth = (Button) view.findViewById(R.id.buttonAuth);
-
+        buttonAddResume = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonAddResume);
+        shimmerContainer = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container);
+        shimmerContainer.startShimmer();
+        buttonAddResume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(view.getContext(), AddResumeActivity.class));
+                getActivity().overridePendingTransition(0, 0);
+            }
+        });
 
         drawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
 
@@ -104,7 +112,6 @@ public class ProfileFragment extends Fragment {
                             getActivity().overridePendingTransition(0, 0);
                             break;
                         case R.id.nav_change_profile:
-                            changeProfileType(view);
                             break;
                     }
                     drawerLayout.closeDrawer(GravityCompat.END);
@@ -142,6 +149,7 @@ public class ProfileFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                shimmerContainer.startShimmer();
                 updateUi();
                 refreshLayout.setRefreshing(false);
             }
@@ -164,8 +172,11 @@ public class ProfileFragment extends Fragment {
         if (firebaseUser == null) {
             textViewWelcomeLabel.setText("Авторизуйтесь, пожалуйста");
             textViewNameSurname.setText("");
-            textViewResLabel.setText("");
-            imageView.setImageResource(R.drawable.ic_user_avatar);
+
+            ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .75f, ScaleAnimation.RELATIVE_TO_SELF, .75f);
+            scale.setDuration(400);
+   //         imageView.setImageResource(R.drawable.ic_user_avatar);
+            imageView.setAnimation(scale);
             buttonAuth.setVisibility(View.VISIBLE);
             buttonAuth.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -174,10 +185,11 @@ public class ProfileFragment extends Fragment {
                     startActivity(intent);
                 }
             });
-            progressBar.setVisibility(View.GONE);
+            shimmerContainer.hideShimmer();
+     //       progressBar.setVisibility(View.GONE);
         } else {
             buttonAuth.setVisibility(View.INVISIBLE);
-            DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+            DocumentReference docRef = db.collection("employees").document(mAuth.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -194,13 +206,9 @@ public class ProfileFragment extends Fragment {
                             if (!document.get("image").toString().isEmpty()) {
                                 Picasso.with(getContext())
                                         .load(document.get("image").toString())
-                                        .placeholder(R.drawable.ic_user_avatar)
-                                        .error(R.drawable.ic_user_avatar)
                                         .into(imageView);
                                 Picasso.with(getContext())
                                         .load(document.get("image").toString())
-                                        .placeholder(R.drawable.ic_user_avatar)
-                                        .error(R.drawable.ic_user_avatar)
                                         .into(imageViewDrawerProfileImage);
                             }
 
@@ -210,7 +218,8 @@ public class ProfileFragment extends Fragment {
                     } else {
                         Log.d("TAG", "get failed with ", task.getException());
                     }
-                    progressBar.setVisibility(View.GONE);
+            //        progressBar.setVisibility(View.GONE);
+                    shimmerContainer.hideShimmer();
                 }
             });
         }
@@ -228,18 +237,6 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    private void changeProfileType(View view) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("typeUser", "employer");
-        db.collection("users").document(mAuth.getUid())
-                .set(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        startActivity(new Intent(view.getContext(), activityempty.class));
-                    }
-                });
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

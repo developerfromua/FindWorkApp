@@ -16,4 +16,35 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="title_activity_employer_work">EmployerWorkActivity</string>
+    <string-array name="add_resume_business">
+        <item>Полная</item>
+        <item>Частичная</item>
+        <item>Проектная</item>
+        <item>Стажировка</item>
+        <item>Волонтерство</item>
+    </string-array>
+    <string-array name="add_resume_schedule">
+        <item>Полный день</item>
+        <item>Сменный график</item>
+        <item>Гибкий график</item>
+        <item>Удаленная работа</item>
+        <item>Вахтовый метод</item>
+    </string-array>
+    <string-array name="add_resume_sex">
+        <item>Мужской</item>
+        <item>Женский</item>
+    </string-array>
+    <string-array name="add_resume_education">
+        <item>Среднее</item>
+        <item>Среднее неполное</item>
+        <item>Среднее специальное</item>
+        <item>Высшее</item>
+        <item>Высшее неполное</item>
+    </string-array>
+    <string-array name="add_resume_education_form">
+        <item>Очная</item>
+        <item>Очно-заочная</item>
+        <item>Заочная</item>
+        <item>Дистанционная</item>
+    </string-array>
 </resources>

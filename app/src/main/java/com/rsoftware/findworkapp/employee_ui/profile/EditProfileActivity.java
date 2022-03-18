@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,21 +42,24 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText editTextEditProfileSurname;
     public static final int RC_PHOTO_PICKER = 1;
 
-
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+
+    private ShimmerFrameLayout shimmerContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+        shimmerContainer = findViewById(R.id.shimmer_view_container_edit_activity);
+        shimmerContainer.startShimmer();
         imageViewProfileEditPic = findViewById(R.id.imageViewProfileEditPic);
         imageViewProfileEditPic.setImageResource(R.drawable.ic_user_avatar);
         editTextEditProfileName = findViewById(R.id.editTextEditProfileName);
         editTextEditProfileSurname = findViewById(R.id.editTextEditProfileSurname);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+        DocumentReference docRef = db.collection("employees").document(mAuth.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -66,11 +70,11 @@ public class EditProfileActivity extends AppCompatActivity {
                     if (!document.get("image").toString().isEmpty()) {
                         Picasso.with(EditProfileActivity.this)
                                 .load(document.get("image").toString())
-                                .placeholder(R.drawable.ic_user_avatar)
-                                .error(R.drawable.ic_user_avatar)
                                 .into(imageViewProfileEditPic);
+
                     }
                 }
+                shimmerContainer.hideShimmer();
             }
         });
     }
@@ -82,7 +86,7 @@ public class EditProfileActivity extends AppCompatActivity {
         data.put("name", name);
         data.put("surname", surname);
         if (!name.isEmpty() && !surname.isEmpty()) {
-            DocumentReference reference = db.collection("users").document(mAuth.getUid());
+            DocumentReference reference = db.collection("employees").document(mAuth.getUid());
             reference
                     .update(data)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -156,7 +160,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         Log.i("TAG", task.getResult().toString());
                         Map<String, Object> data = new HashMap<>();
                         data.put("image", downloadUri.toString());
-                        DocumentReference reference = db.collection("users").document(mAuth.getUid());
+                        DocumentReference reference = db.collection("employees").document(mAuth.getUid());
                         reference
                                 .update(data)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {

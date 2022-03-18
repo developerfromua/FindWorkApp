@@ -27,10 +27,10 @@
         android:id="@+id/navigation_messages"
         android:name="com.rsoftware.findworkapp.employee_ui.messages.MessagesFragment"
         android:label="Сообщения"
-        tools:layout="@layout/fragment_responses" />
+        tools:layout="@layout/fragment_messages" />
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.rsoftware.findworkapp.employee_ui.profile.ProfileFragment"
         android:label="Профиль"
-        tools:layout="@layout/fragment_responses" />
+        tools:layout="@layout/fragment_profile" />
 </navigation>

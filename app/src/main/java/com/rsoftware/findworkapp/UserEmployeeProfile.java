@@ -7,11 +7,8 @@ public class UserEmployeeProfile {
     private String USER_NAME;
     private String USER_SURNAME;
     private String USER_MIDDLE_NAME;
-    private String USER_DATE_OF_BIRTH;
-    private String USER_CITY;
-    private String USER_PHONE;
-    private String USER_PROFILE_IMAGE;
     private String USER_WANTED_VACANCY;
+    private int USER_WANTED_SALARY;
     private String USER_BUSYNESS;
     private String USER_SCHEDULE;
     private String USER_EMAIL;
@@ -35,16 +32,13 @@ public class UserEmployeeProfile {
     private ArrayList<Boolean> USER_DRIVERS_LICENCE;
     private String USER_RECOMMENDATIONS;
     private String USER_ADDITIONAL_INFO;
-    private int USER_WANTED_SALARY;
+
 
     public UserEmployeeProfile(String USER_NAME, String USER_SURNAME, String USER_MIDDLE_NAME, String USER_DATE_OF_BIRTH, String USER_CITY, String USER_PHONE, String USER_PROFILE_IMAGE, String USER_WANTED_VACANCY, String USER_BUSYNESS, String USER_SCHEDULE, String USER_EMAIL, String USER_CITIZENSHIP, String USER_SEX, String USER_EDUCATION, String USER_LAST_WORK_VACANCY, String USER_LAST_WORK_ORGANIZATION, String USER_LAST_WORK_DURANCE, String USER_EDUCATIONAL_INSTITUTION, String USER_FACTUALITY, String USER_YEAR_OF_ENDING_EDUCATION, String USER_FORM_OF_EDUCATION, boolean USER_READY_TO_BUSINESS_TRIP, boolean USER_SKILL_PRINT_SCAN_COPY, boolean USER_SKILL_INTERNET, boolean USER_SKILL_EXCEL, boolean USER_SKILL_POWERPOINT, boolean USER_SKILL_OTHER, boolean USER_ARMY, ArrayList<Boolean> USER_DRIVERS_LICENCE, String USER_RECOMMENDATIONS, String USER_ADDITIONAL_INFO, int USER_WANTED_SALARY) {
         this.USER_NAME = USER_NAME;
         this.USER_SURNAME = USER_SURNAME;
         this.USER_MIDDLE_NAME = USER_MIDDLE_NAME;
-        this.USER_DATE_OF_BIRTH = USER_DATE_OF_BIRTH;
-        this.USER_CITY = USER_CITY;
-        this.USER_PHONE = USER_PHONE;
-        this.USER_PROFILE_IMAGE = USER_PROFILE_IMAGE;
+
         this.USER_WANTED_VACANCY = USER_WANTED_VACANCY;
         this.USER_BUSYNESS = USER_BUSYNESS;
         this.USER_SCHEDULE = USER_SCHEDULE;
@@ -96,37 +90,8 @@ public class UserEmployeeProfile {
         this.USER_MIDDLE_NAME = USER_MIDDLE_NAME;
     }
 
-    public String getUSER_DATE_OF_BIRTH() {
-        return USER_DATE_OF_BIRTH;
-    }
 
-    public void setUSER_DATE_OF_BIRTH(String USER_DATE_OF_BIRTH) {
-        this.USER_DATE_OF_BIRTH = USER_DATE_OF_BIRTH;
-    }
 
-    public String getUSER_CITY() {
-        return USER_CITY;
-    }
-
-    public void setUSER_CITY(String USER_CITY) {
-        this.USER_CITY = USER_CITY;
-    }
-
-    public String getUSER_PHONE() {
-        return USER_PHONE;
-    }
-
-    public void setUSER_PHONE(String USER_PHONE) {
-        this.USER_PHONE = USER_PHONE;
-    }
-
-    public String getUSER_PROFILE_IMAGE() {
-        return USER_PROFILE_IMAGE;
-    }
-
-    public void setUSER_PROFILE_IMAGE(String USER_PROFILE_IMAGE) {
-        this.USER_PROFILE_IMAGE = USER_PROFILE_IMAGE;
-    }
 
     public String getUSER_WANTED_VACANCY() {
         return USER_WANTED_VACANCY;

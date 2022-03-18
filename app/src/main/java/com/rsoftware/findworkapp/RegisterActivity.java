@@ -33,10 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText editTextPassword;
     private EditText editTextName;
     private EditText editTextSurname;
-    private RadioGroup radioGroupTypeWorker;
-    private RadioButton radioButtonRegisterEmployee;
-    private RadioButton radioButtonRegisterEmployer;
-    private String typeWorker;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +45,6 @@ public class RegisterActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextRegisterPassword);
         editTextName = findViewById(R.id.editTextRegisterName);
         editTextSurname = findViewById(R.id.editTextRegisterSurname);
-        radioButtonRegisterEmployee = findViewById(R.id.radioButtonRegisterEmployee);
-        radioButtonRegisterEmployer = findViewById(R.id.radioButtonRegisterEmployer);
-        radioGroupTypeWorker = findViewById(R.id.radioGroupTypeWorker);
     }
 
     private void regNewUser(){
@@ -70,28 +64,14 @@ public class RegisterActivity extends AppCompatActivity {
                             data.put("email", email);
                             data.put("image", "");
 
-                            String collectionPath;
-                            if (radioGroupTypeWorker.getCheckedRadioButtonId() == R.id.radioButtonRegisterEmployee) {
-                                typeWorker = "employee";
-                            }
-                            else {
-                                typeWorker = "employer";
-                            }
-                            data.put("typeUser", typeWorker);
-                            db.collection("users").document(mAuth.getUid())
+                            db.collection("employees").document(mAuth.getUid())
                                     .set(data)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             Log.d("TAG", "DocumentSnapshot successfully written!");
-                                            if (typeWorker.equals("employee")) {
                                                 Intent intent = new Intent(RegisterActivity.this, EmployeeWorkActivity.class);
                                                 startActivity(intent);
-                                            }
-                                            else{
-                                                Intent intent = new Intent(RegisterActivity.this, EmployerWorkActivity.class);
-                                                startActivity(intent);
-                                            }
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
