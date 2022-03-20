@@ -278,7 +278,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:text="Пол" />
+                    android:text="Образование" />
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -314,12 +314,15 @@
                 <EditText
                     android:id="@+id/editTextAddResumeWorkExp"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:lines="5"
+                    android:scrollbars="vertical"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:ems="10"
                     android:gravity="start|top"
                     android:inputType="textMultiLine" />
+
                 <TextView
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
@@ -423,5 +426,43 @@
                             android:entries="@array/add_resume_education_form"
                             android:padding="8dp" />
                 </RelativeLayout>
+                <TextView
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:text="4. Ключевые навыки"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="Например: Adobe Photoshop, Копирайтинг, Java, MS Excel, SEO" />
+
+                <EditText
+                    android:id="@+id/editTextAddResumeSkills"
+                    android:layout_width="match_parent"
+                    android:lines="5"
+                    android:scrollbars="vertical"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:inputType="textMultiLine" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Добавить резюме"
+                    android:onClick="onClickAddResume"/>
         </LinearLayout>
 </ScrollView>

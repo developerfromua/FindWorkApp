@@ -10,6 +10,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
@@ -31,15 +33,24 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.rsoftware.findworkapp.AddResumeActivity;
 import com.rsoftware.findworkapp.MainActivity;
 import com.rsoftware.findworkapp.R;
+import com.rsoftware.findworkapp.Resume;
+import com.rsoftware.findworkapp.ResumeActivity;
+import com.rsoftware.findworkapp.ResumeAdapter;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProfileFragment extends Fragment {
@@ -49,12 +60,14 @@ public class ProfileFragment extends Fragment {
     private TextView textViewNameSurname;
     private TextView textViewWelcomeLabel;
     private Button buttonAuth;
+    private RecyclerView recyclerViewResumes;
     // Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     // Progress bar & loaders
     private ProgressBar progressBar;
     private SwipeRefreshLayout refreshLayout;
+    private ShimmerFrameLayout shimmerContainer;
     // Drawer
     private ImageView imageViewDrawerButton;
     private DrawerLayout drawerLayout;
@@ -63,9 +76,11 @@ public class ProfileFragment extends Fragment {
     private TextView textViewDrawerNameSurname;
     private ImageView imageViewDrawerProfileImage;
     private FloatingActionButton buttonAddResume;
-    private ShimmerFrameLayout shimmerContainer;
     private String nameSurname;
     private String email;
+    //Resumes
+    private List<Resume> resumeList;
+    private ResumeAdapter resumeAdapter;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -76,7 +91,7 @@ public class ProfileFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-      //  progressBar.setVisibility(View.VISIBLE);
+        //  progressBar.setVisibility(View.VISIBLE);
         imageView = (ImageView) view.findViewById(R.id.imageViewProfileImage);
         textViewNameSurname = (TextView) view.findViewById(R.id.textViewNameSurname);
         textViewWelcomeLabel = (TextView) view.findViewById(R.id.textViewWelcomeLabel);
@@ -85,7 +100,45 @@ public class ProfileFragment extends Fragment {
         buttonAuth = (Button) view.findViewById(R.id.buttonAuth);
         buttonAddResume = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonAddResume);
         shimmerContainer = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container);
+        recyclerViewResumes = (RecyclerView) view.findViewById(R.id.recyclerViewResumes);
         shimmerContainer.startShimmer();
+        resumeList = new ArrayList<>();
+        recyclerViewResumes.setLayoutManager(new LinearLayoutManager(view.getContext()));
+
+        resumeAdapter = new ResumeAdapter(resumeList, new ResumeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Resume item, int pos) {
+           //     Toast.makeText(getContext(), item.getWantedVacancy() + " - " + pos, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(view.getContext(), ResumeActivity.class);
+                intent.putExtra("docId", item.getDocId());
+                intent.putExtra("name", item.getName());
+                intent.putExtra("surname", item.getSurname());
+                intent.putExtra("middleName", item.getMiddleName());
+                intent.putExtra("wantedVacancy", item.getWantedVacancy());
+                intent.putExtra("wantedSalary", item.getWantedSalary());
+                intent.putExtra("business", item.getBusiness());
+                intent.putExtra("schedule", item.getSchedule());
+                intent.putExtra("phone", item.getPhone());
+                intent.putExtra("email", item.getEmail());
+                intent.putExtra("city", item.getCity());
+                intent.putExtra("citizenship", item.getCitizenship());
+                intent.putExtra("sex", item.getSex());
+                intent.putExtra("education", item.getEducation());
+                intent.putExtra("workExp", item.getWorkExp());
+                intent.putExtra("educationInstitution", item.getEducationInstitution());
+                intent.putExtra("factuality", item.getFactuality());
+                intent.putExtra("educationSpeciality", item.getEducationSpeciality());
+                intent.putExtra("yearEndingEducation", item.getYearEndingEducation());
+                intent.putExtra("educationForm", item.getEducationForm());
+                intent.putExtra("skills", item.getResumeSkills());
+                if (!item.getDocId().isEmpty()) {
+                    startActivity(intent);
+                }
+            }
+        });
+        recyclerViewResumes.setAdapter(resumeAdapter);
+        resumeAdapter.clearItems();
+
         buttonAddResume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,13 +196,13 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-
-        updateUi();
+    //    updateUi();
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 shimmerContainer.startShimmer();
+                releaseRecycler();
                 updateUi();
                 refreshLayout.setRefreshing(false);
             }
@@ -161,7 +214,9 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-     //   updateUi();
+        resumeAdapter.clearItems();
+        releaseRecycler();
+        updateUi();
     }
 
     private void updateUi() {
@@ -175,7 +230,7 @@ public class ProfileFragment extends Fragment {
 
             ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .75f, ScaleAnimation.RELATIVE_TO_SELF, .75f);
             scale.setDuration(400);
-   //         imageView.setImageResource(R.drawable.ic_user_avatar);
+            //         imageView.setImageResource(R.drawable.ic_user_avatar);
             imageView.setAnimation(scale);
             buttonAuth.setVisibility(View.VISIBLE);
             buttonAuth.setOnClickListener(new View.OnClickListener() {
@@ -186,7 +241,7 @@ public class ProfileFragment extends Fragment {
                 }
             });
             shimmerContainer.hideShimmer();
-     //       progressBar.setVisibility(View.GONE);
+            //       progressBar.setVisibility(View.GONE);
         } else {
             buttonAuth.setVisibility(View.INVISIBLE);
             DocumentReference docRef = db.collection("employees").document(mAuth.getUid());
@@ -196,7 +251,6 @@ public class ProfileFragment extends Fragment {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            Log.d("TAG", "DocumentSnapshot data: " + document.getData());
                             textViewWelcomeLabel.setText("Добро пожаловать");
                             email = document.get("email").toString();
                             nameSurname = document.get("name").toString() + " " + document.get("surname").toString();
@@ -218,13 +272,35 @@ public class ProfileFragment extends Fragment {
                     } else {
                         Log.d("TAG", "get failed with ", task.getException());
                     }
-            //        progressBar.setVisibility(View.GONE);
+                    //        progressBar.setVisibility(View.GONE);
                     shimmerContainer.hideShimmer();
                 }
             });
+
+
         }
     }
 
+    public void releaseRecycler() {
+        resumeAdapter.clearItems();
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        db.collection("resumes")
+                .whereEqualTo("meta_uid", mAuth.getUid())
+                .get()
+        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        resumeList.add(new Resume(document.getId(),document.get("name").toString(),document.get("surname").toString(),document.get("middle_name").toString(),document.get("wanted_vacancy").toString(),document.get("wanted_salary").toString(),document.get("business").toString(),document.get("schedule").toString(),document.get("phone").toString(),document.get("email").toString(),document.get("city").toString(),document.get("citizenship").toString(),document.get("sex").toString(),document.get("education").toString(),document.get("work_exp").toString(),document.get("education_institution").toString(),document.get("factuality").toString(),document.get("education_speciality").toString(),document.get("year_ending_education").toString(),document.get("education_form").toString(),document.get("skills").toString()));
+                    }
+                    resumeAdapter.notifyDataSetChanged();
+
+                }
+            }
+        });
+    }
 
     private void signOut(View view) {
         mAuth.signOut();

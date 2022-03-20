@@ -17,6 +17,7 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="title_activity_employer_work">EmployerWorkActivity</string>
     <string-array name="add_resume_business">
+        <item>не выбрано</item>
         <item>Полная</item>
         <item>Частичная</item>
         <item>Проектная</item>
@@ -24,6 +25,7 @@
         <item>Волонтерство</item>
     </string-array>
     <string-array name="add_resume_schedule">
+        <item>не выбрано</item>
         <item>Полный день</item>
         <item>Сменный график</item>
         <item>Гибкий график</item>
@@ -31,10 +33,12 @@
         <item>Вахтовый метод</item>
     </string-array>
     <string-array name="add_resume_sex">
+        <item>не выбрано</item>
         <item>Мужской</item>
         <item>Женский</item>
     </string-array>
     <string-array name="add_resume_education">
+        <item>не выбрано</item>
         <item>Среднее</item>
         <item>Среднее неполное</item>
         <item>Среднее специальное</item>
@@ -42,6 +46,7 @@
         <item>Высшее неполное</item>
     </string-array>
     <string-array name="add_resume_education_form">
+        <item>не выбрано</item>
         <item>Очная</item>
         <item>Очно-заочная</item>
         <item>Заочная</item>
