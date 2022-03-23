@@ -117,6 +117,7 @@ public class AddResumeActivity extends AppCompatActivity {
         data.put("education_form", spinnerAddResumeEducationForm.getSelectedItem().toString().trim());
         data.put("skills", editTextAddResumeSkills.getText().toString().trim());
 
+
         db.collection("resumes").document()
                 .set(data)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
